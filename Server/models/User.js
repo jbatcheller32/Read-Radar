@@ -1,18 +1,6 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
 
-// import schema from Book.js
-const bookSchema = require('./Book');
-
-// Define Comment Schema
-const commentSchema = new Schema({
-  content: String,
-  date: {
-    type: Date,
-    default: Date.now
-  }
-});
-
 const userSchema = new Schema(
   {
     username: {
@@ -31,9 +19,10 @@ const userSchema = new Schema(
       required: true,
     },
     // set savedBooks to be an array of data that adheres to the bookSchema
-    savedBooks: [bookSchema],
-    // set comments to be an array of data that adheres to the commentSchema
-    comments: [commentSchema],
+    savedBooks: [{
+      type: Schema.Types.ObjectId,
+      ref: "book"
+    }],
   },
   // set this to use virtual below
   {

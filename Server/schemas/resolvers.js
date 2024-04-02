@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Book } = require('../models');
 const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
@@ -35,12 +35,13 @@ const resolvers = {
     },
     saveBook: async(parent, {book}, context) => {
       if (context.user) {
+        const bookdata = await Book.create(book)
         const user = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { savedBooks: book } },
+          { $addToSet: { savedBooks: bookdata._id } },
           { new: true, runValidators: true }
         );
-        return user;
+        return bookdata;
       }
       throw AuthenticationError;
     },

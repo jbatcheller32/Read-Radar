@@ -5,7 +5,6 @@ type User {
     email: String!
     bookCount: Int
     savedBooks: [Book]
-    comments: [Comment] # Add this line to include comments in the User type
 }
 
 type Book {
@@ -15,13 +14,15 @@ type Book {
     title: String
     image: String
     link: String
+    comments: [Comment] # Add this line to include comments in the User type
 }
+
 
 # Add this type definition for Comment
 type Comment {
-    book: String!
+    date: String!
     username: String!
-    comment: String!
+    content: String!
 }
 
 type Auth {
@@ -45,9 +46,9 @@ type Query {
 type Mutation {
     login(email: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
-    saveBook(book: BookInput!): User
+    saveBook(book: BookInput!): Book
     removeBook (bookId: String!): User
-    addComment(book: String!, username: String!, comment: String!): User # Add this line for the addComment mutation
+    addComment(date: String!, username: String!, content: String!): User # Add this line for the addComment mutation
 }
 `
 
