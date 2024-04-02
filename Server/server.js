@@ -2,6 +2,7 @@ const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const { buildSchema } = require('graphql');
 const mongoose = require('mongoose');
+const axios = require('axios'); // Import Axios for making HTTP requests
 require('dotenv').config();
 
 // Connect to MongoDB
@@ -30,6 +31,7 @@ const schema = buildSchema(`
   type Query {
     books: [Book]
     book(id: ID!): Book
+    searchBooks(query: String!): [Book] # New field for searching books
   }
 
   type Mutation {
@@ -54,6 +56,20 @@ const root = {
   deleteBook: async ({ id }) => {
     await Book.findByIdAndDelete(id);
     return true;
+  },
+  searchBooks: async ({ query }) => {
+    try {
+      const response = await axios.get(`https://openlibrary.org/search.json?q=${query}`);
+      const books = response.data.docs.map(book => ({
+        title: book.title,
+        author: book.author_name ? book.author_name.join(', ') : 'Unknown',
+        genre: book.subject ? book.subject.join(', ') : 'Unknown'
+      }));
+      return books;
+    } catch (error) {
+      console.error('Error searching books:', error);
+      throw new Error('Failed to search books');
+    }
   }
 };
 
