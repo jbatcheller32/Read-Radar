@@ -21,7 +21,7 @@ type Book {
 type Comment {
     book: String!
     username: String!
-    comment: String!
+    content: String!
 }
 
 type Auth {

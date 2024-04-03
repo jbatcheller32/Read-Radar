@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, Types, model } = require('mongoose');
 const bcrypt = require('bcrypt');
 
 // import schema from Book.js
@@ -6,7 +6,22 @@ const bookSchema = require('./Book');
 
 // Define Comment Schema
 const commentSchema = new Schema({
-  content: String,
+  commentId: {
+    type: Schema.Types.ObjectId,
+    default: () => new Types.ObjectId(),
+  },
+  book: {
+    type: String,
+    required: true
+  },
+  username: {
+    type: String,
+    required: true
+  },
+  content: {
+    type: String,
+    required: true
+  },
   date: {
     type: Date,
     default: Date.now

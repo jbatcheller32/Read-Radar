@@ -1,85 +1,48 @@
 const express = require('express');
-const { graphqlHTTP } = require('express-graphql');
-const { buildSchema } = require('graphql');
-const mongoose = require('mongoose');
-const axios = require('axios'); // Import Axios for making HTTP requests
-require('dotenv').config();
+const path = require('path');
+// Import the ApolloServer class
+const { ApolloServer } = require('@apollo/server');
+const { expressMiddleware } = require('@apollo/server/express4');
+const { authMiddleware } = require('./utils/auth');
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once('open', () => console.log('Connected to MongoDB'));
+// Import the two parts of a GraphQL schema
+const { typeDefs, resolvers } = require('./schemas');
+const db = require('./config/connection');
 
-// Define mongoose schema and model
-const bookSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  genre: String
+const PORT = process.env.PORT || 3001;
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
 });
-const Book = mongoose.model('Book', bookSchema);
-
-// GraphQL schema
-const schema = buildSchema(`
-  type Book {
-    id: ID!
-    title: String!
-    author: String!
-    genre: String!
-  }
-
-  type Query {
-    books: [Book]
-    book(id: ID!): Book
-    searchBooks(query: String!): [Book] # New field for searching books
-  }
-
-  type Mutation {
-    addBook(title: String!, author: String!, genre: String!): Book
-    updateBook(id: ID!, title: String, author: String, genre: String): Book
-    deleteBook(id: ID!): Boolean
-  }
-`);
-
-// Root resolver
-const root = {
-  books: async () => await Book.find(),
-  book: async ({ id }) => await Book.findById(id),
-  addBook: async ({ title, author, genre }) => {
-    const book = new Book({ title, author, genre });
-    return await book.save();
-  },
-  updateBook: async ({ id, title, author, genre }) => {
-    await Book.findByIdAndUpdate(id, { title, author, genre });
-    return await Book.findById(id);
-  },
-  deleteBook: async ({ id }) => {
-    await Book.findByIdAndDelete(id);
-    return true;
-  },
-  searchBooks: async ({ query }) => {
-    try {
-      const response = await axios.get(`https://openlibrary.org/search.json?q=${query}`);
-      const books = response.data.docs.map(book => ({
-        title: book.title,
-        author: book.author_name ? book.author_name.join(', ') : 'Unknown',
-        genre: book.subject ? book.subject.join(', ') : 'Unknown'
-      }));
-      return books;
-    } catch (error) {
-      console.error('Error searching books:', error);
-      throw new Error('Failed to search books');
-    }
-  }
-};
 
 const app = express();
 
-app.use('/graphql', graphqlHTTP({
-  schema: schema,
-  rootValue: root,
-  graphiql: true,
-}));
+// Create a new instance of an Apollo server with the GraphQL schema
+const startApolloServer = async () => {
+  await server.start();
+  
+  app.use(express.urlencoded({ extended: false }));
+  app.use(express.json());
+  
+  app.use('/graphql', expressMiddleware(server, {
+    context: authMiddleware
+  }));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../client/dist')));
+
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+    });
+  }
+
+  db.once('open', () => {
+    app.listen(PORT, () => {
+      console.log(`API server running on port ${PORT}!`);
+      console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
+    });
+  });
+};
+
+// Call the async function to start the server
+startApolloServer();

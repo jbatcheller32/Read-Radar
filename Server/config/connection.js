@@ -1,6 +1,8 @@
-const mongoose = require('mongoose');
+const { connect, connection } = require('mongoose');
 
 // Connect to the ReadRadar database
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/readradar', { useNewUrlParser: true, useUnifiedTopology: true });
+const connectionString = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/readradar'
 
-module.exports = mongoose.connection;
+connect(connectionString);
+
+module.exports = connection;

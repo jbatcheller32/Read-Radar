@@ -1,3 +1,3 @@
-const User = import('./User');
-const Book = import('./Book')
+const User = require('./User');
+const Book = require('./Book')
 module.exports = { User, Book };
