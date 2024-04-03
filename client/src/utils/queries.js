@@ -21,7 +21,7 @@ export const QUERY_ME = gql`
       _id
       username
       email
-      thoughts {
+      comments {
         _id
         commentText
         commentAuthor

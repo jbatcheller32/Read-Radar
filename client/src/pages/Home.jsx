@@ -5,17 +5,26 @@ function BookSearch() {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [genre, setGenre] = useState('');
-  const [results, setResults] = useState('');
+  const [results, setResults] = useState([]);
 
 
 
 
-  const handleSearch = async (e) => {
-
-    const { search, value } = e.target;
-
-    return search === 'title' ? setTitle(value) : search === 'genre' ? setGenre(value) : search === 'author' ? setAuthor(value) : null;
-
+  const handleSearch = (e) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case 'title':
+        setTitle(value);
+        break;
+      case 'author':
+        setAuthor(value);
+        break;
+      case 'genre':
+        setGenre(value);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleSearchSubmit = (e) => {
@@ -28,16 +37,14 @@ function BookSearch() {
 
   const handleClick = async () => {
     try {
-
       const response = await fetch(`https://openlibrary.org/search.json?title=${title}&author=${author}&genre=${genre}`);
       const data = await response.json();
-
-
-      setResults(data);
+      setResults(data.docs);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
 
 
   return (
@@ -71,6 +78,16 @@ function BookSearch() {
           Submit
         </button>
       </form>
+
+      <section className="results">
+        {results.map((result, index) => (
+          <div key={index}>
+            <h2>{result.title}</h2>
+            <p>Author: {result.author_name ? result.author_name.join(', ') : 'Unknown'}</p>
+            <p>Genre: {result.subject ? result.subject.join(', ') : 'Unknown'}</p>
+          </div>
+        ))}
+      </section>
     </div>
   );
 }
