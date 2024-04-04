@@ -1,0 +1,22 @@
+body {
+    display: flex;
+    justify-content: center;
+    background-color: lightgrey;
+    
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+}
+
+input{
+    margin-right: 10px;
+}
+
+.form {
+    display: flex;
+    justify-content: center;
+    height: 35px;
+    padding: 10px;
+}
