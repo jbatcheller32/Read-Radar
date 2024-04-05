@@ -21,7 +21,7 @@ const Profile = () => {
 
   if (
     Auth.loggedIn() &&
-    Auth.getProfile().authenticatedPerson.username === userParam
+    Auth.getProfile().username === userParam
   ) {
     return <Navigate to="/me" />;
   }
@@ -33,7 +33,7 @@ const Profile = () => {
   if (!user?.username) {
     return (
       <h4>
-        You need to be logged in to view profiles.
+        Login to view your profile!
       </h4>
     );
   }
