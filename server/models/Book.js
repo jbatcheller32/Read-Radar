@@ -21,7 +21,7 @@ const bookSchema = new Schema({
     type: String,
     required: true,
   },
-  // saved book id from GoogleBooks
+  // saved book id from Open Library
   bookId: {
     type: String,
     required: true,
@@ -38,5 +38,5 @@ const bookSchema = new Schema({
   },
 comments: [commentSchema],
 });
-const Book = model("book", bookSchema)
+const Book = model("Book", bookSchema)
 module.exports = Book;

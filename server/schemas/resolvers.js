@@ -5,7 +5,7 @@ const resolvers = {
   Query:{
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate('books');
+        return User.findOne({ _id: context.user._id }).populate('savedBooks');
       }
       throw AuthenticationError;
     },
@@ -55,8 +55,25 @@ const resolvers = {
         return user;
       }
       throw AuthenticationError;
-    }
-  }
+    },
+    removeBook: async (parent, { bookId }, context) => {
+      if (context.user) {
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $pull: { savedBooks: { bookId } } },
+          { new: true }
+        ).populate('savedBooks');
+
+        if (!updatedUser) {
+          throw new Error('No user with this id!');
+        }
+
+        return updatedUser;
+      }
+
+      throw new AuthenticationError('You need to be logged in!');
+    },
+  },
 }
 
 module.exports=resolvers;

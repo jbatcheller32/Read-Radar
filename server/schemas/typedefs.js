@@ -37,7 +37,14 @@ input BookInput{
     title: String
     image: String
     link: String
+    comments: [CommentInput]
 }
+
+input CommentInput {
+ username: String!
+  content: String! # Add this line
+  date: String! # Add this line
+  }
 
 type Query {
     me: User
