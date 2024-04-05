@@ -18,7 +18,7 @@ const Footer = () => {
         },
         imageStyle: {
             height: '50px',
-            marginTop: '50px'
+            marginTop: '55px'
         },
     }; 
 
