@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const { User, Book } = require('../models');
 const { signToken, AuthenticationError } = require('../utils/auth');
 
@@ -56,21 +57,27 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
+    
     removeBook: async (parent, { bookId }, context) => {
+      // console.log("bookId", bookId)
+      // const objectID = new mongoose.Types.ObjectId(bookId);
+      // console.log("objectID", objectID);
       if (context.user) {
         const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedBooks: { bookId } } },
+          // { $pull: { savedBooks: { _id: bookId } } }, // target the _id field of the books
+          { $pull: { savedBooks: bookId  } }, // target the _id field of the books
+
           { new: true }
         ).populate('savedBooks');
-
+    
         if (!updatedUser) {
           throw new Error('No user with this id!');
         }
-
+    
         return updatedUser;
       }
-
+    
       throw new AuthenticationError('You need to be logged in!');
     },
   },

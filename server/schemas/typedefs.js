@@ -8,7 +8,7 @@ type User {
 }
 
 type Book {
-    bookId: ID!
+    _id: ID
     authors: [String]
     description: String
     title: String
@@ -31,7 +31,7 @@ type Auth {
 }
 
 input BookInput{
-    bookId: ID!
+    bookId: ID
     authors: [String]
     description: String
     title: String
