@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations';
-import Auth from '../../utils/auth';
+import Auth from '../utils/auth';
 import '../styles/styles.css';
 import { saveBook, searchGoogleBooks } from '../utils/API';
 
