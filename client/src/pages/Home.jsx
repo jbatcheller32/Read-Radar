@@ -3,7 +3,6 @@ import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations';
 import Auth from '../utils/auth';
 import '../styles/styles.css';
-import { saveBook, searchGoogleBooks } from '../utils/API';
 
 function BookSearch() {
 
@@ -43,7 +42,6 @@ function BookSearch() {
   const handleClick = async () => {
     try {
       const response = await fetch(`https://openlibrary.org/search.json?title=${title}`);
-      // const googleImageResponse = await searchGoogleBooks(searchInput);
       const data = await response.json();
 
       setResults(data.docs);
