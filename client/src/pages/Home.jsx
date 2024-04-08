@@ -43,7 +43,7 @@ function BookSearch() {
   const handleClick = async () => {
     try {
       const response = await fetch(`https://openlibrary.org/search.json?title=${title}`);
-      const googleImageResponse = await searchGoogleBooks(searchInput);
+      // const googleImageResponse = await searchGoogleBooks(searchInput);
       const data = await response.json();
 
       setResults(data.docs);
