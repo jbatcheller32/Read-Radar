@@ -9,7 +9,7 @@ function BookSearch() {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [results, setResults] = useState([]);
-  //const [savedBookIds, setSavedBookIds] = useState([]);
+  const [savedBookIds, setSavedBookIds] = useState([]);
   const [comments, setComments] = useState([]);
   const [saveBook, { error }] = useMutation(SAVE_BOOK);
   const [addComment] = useMutation(ADD_COMMENT);
@@ -76,7 +76,7 @@ console.log(data);
         throw new Error('Something went wrong!');
       }
 
-      //setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
       console.error(err);
     }
@@ -158,13 +158,13 @@ console.log(data);
             {Auth.loggedIn() && (
               <div>
               <button
-                  // disabled={savedBookIds?.includes(result.bookId)}
+                  disabled={savedBookIds?.includes(result.bookId)}
                   className='btn-block btn-info'
                   onClick={() => handleSaveBook(result.bookId)}
                 >
-                  {/* {savedBookIds?.includes(result.bookId) 
+                   {savedBookIds?.includes(result.bookId) 
                     ? 'This book has already been saved!'
-                    : 'Save this Book!'}*/}
+                    : 'Save this Book!'}
                 </button> 
                 <button
                   className='btn-block btn-info'
