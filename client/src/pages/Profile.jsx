@@ -21,7 +21,7 @@ const Profile = () => {
 
   if (
     Auth.loggedIn() &&
-    Auth.getProfile().authenticatedPerson.username === userParam
+    Auth.getProfile().username === userParam
   ) {
     return <Navigate to="/me" />;
   }
@@ -33,7 +33,7 @@ const Profile = () => {
   if (!user?.username) {
     return (
       <h4>
-        You need to be logged in to view profiles.
+        Login to view your profile!
       </h4>
     );
   }
@@ -41,25 +41,19 @@ const Profile = () => {
 
 
   return (
-
-
     <div>
-      <div className="flex-row justify-center mb-3">
-        <h2 className="col-12 col-md-10 bg-dark text-light p-3 mb-5">
-          Viewing {userParam ? `${user.username}'s` : 'your'} profile.
-        </h2>
-
-
-        {!userParam && (
-          <div
-            className="col-12 col-md-10 mb-3 p-3"
-            style={{ border: '1px dotted #1a1a1a' }}
-          >
-
-          </div>
-        )}
-      </div>
+      <h1>User Profile</h1>
+      <h2>Saved Books</h2>
+      <ul>
+        {data.user.savedBooks.map(book => (
+          <li key={book.bookId}>
+            <h3>{book.title}</h3>
+            <p>Author: {book.authors.join(', ')}</p>
+            <p>Description: {book.description}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
+}
 export default Profile;

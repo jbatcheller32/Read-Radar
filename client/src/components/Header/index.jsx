@@ -56,10 +56,10 @@ const Header = () => {
                 
           {Auth.loggedIn() ? (
             <>
-              <Link className="btn btn-lg btn-info m-2" to="/me">
-                {Auth.getProfile().data.username} profile
+              <Link className="btn btn-lg btn-info m-2" to="/me" style={styles.navLinks}>
+                {Auth.getProfile().data.username}'s Profile
               </Link>
-              <button className="btn btn-lg btn-light m-2" onClick={logout}>
+              <button className="btn btn-lg btn-light m-2" onClick={logout} style={styles.navLinks}>
                 Logout
               </button>
             </>
