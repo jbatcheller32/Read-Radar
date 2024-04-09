@@ -8,7 +8,7 @@ type User {
 }
 
 type Book {
-    _id: ID
+    _id: ID!
     authors: [String]
     description: String
     title: String

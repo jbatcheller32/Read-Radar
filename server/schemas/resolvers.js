@@ -40,17 +40,9 @@ const resolvers = {
       return { token, user };
     },
 
-    saveBook: async(parent, {book}, context) => {
-      console.log('another book', book);
-      if (context.user) {
-        console.log(context.user);
-        const user = await User.findByIdAndUpdate(
-
     saveBook: async (parent, { book }, context) => {
       if (context.user) {
-        const bookdata = await Book.create(book);
         const user = await User.findOneAndUpdate(
-
           { _id: context.user._id },
           { $push: { savedBooks: book } },
           { new: true }
@@ -60,7 +52,7 @@ const resolvers = {
       throw AuthenticationError;
     },
 
-    addComment: async (parent, { bookId, content }, context) => {
+    addComment: async (parent, { book, username, comment }, context) => {
       if (context.user) {
         const { _id: userId, username } = context.user;
         const newComment = content ? { content: content } : null;
