@@ -1,0 +1,11 @@
+.book-results-container{
+    width: 75em;
+    margin: auto;
+    margin-bottom: 1em;
+    padding: auto;
+    border: solid;
+    border-color: whitesmoke;
+    border-width: 1em;
+    box-shadow: 0px 5px 5px 5px;
+    opacity: 0.7;
+}

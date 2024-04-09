@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations';
 import Auth from '../utils/auth';
 import '../styles/styles.css';
+import './Home.css'
 
 function BookSearch() {
 
@@ -121,20 +122,28 @@ function BookSearch() {
 
       <section className="results">
         {results.map((result, index) => (
-          <div key={index}>
-            <h2>{result.title}</h2>
-            <p>Author: {result.author_name ? result.author_name.join(', ') : 'Unknown'}</p>
-            <p>Genre: {result.subject ? result.subject.join(', ') : 'Unknown'}</p>
-            {Auth.loggedIn() && (
-                      <button
-                        disabled={savedBookIds?.some((savedBookId) => savedBookId === result.bookId)}
-                        className='btn-block btn-info'
-                        onClick={() => handleSaveBook(result.bookId)}>
-                        {savedBookIds?.some((savedBookId) => savedBookId === result.bookId)
-                          ? 'This book has already been saved!'
-                          : 'Save this Book!'}
-                      </button>
-                       )}
+          <div className="book-results-container" key={index}>
+            <header className="w3-container w3-blue">
+              <u><h2>{result.title}</h2></u>
+            </header>
+
+            <div clasNames="w3-container">
+              <i><p>Author: {result.author_name ? result.author_name.join(', ') : 'Unknown'}</p></i>
+              <p>Genre: {result.subject ? result.subject.join(', ') : 'Unknown'}</p>
+            </div>
+            <footer className="w3-container w3-blue">
+              {Auth.loggedIn() && (
+                <button
+                  disabled={savedBookIds?.some((savedBookId) => savedBookId === result.bookId)}
+                  className='btn-block btn-info'
+                  onClick={() => handleSaveBook(result.bookId)}>
+                  {savedBookIds?.some((savedBookId) => savedBookId === result.bookId)
+                    ? 'This book has already been saved!'
+                    : 'Save this Book!'}
+                </button>
+              )}
+            </footer>
+
           </div>
         ))}
       </section>
