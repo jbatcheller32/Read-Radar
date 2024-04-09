@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 
-import Auth from '../../utils/Authuth'; 
+import Auth from '../../utils/Auth'; 
 
 const Header = () => {
     const logout = (e) => {
