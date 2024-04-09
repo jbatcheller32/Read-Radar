@@ -135,7 +135,7 @@ function BookSearch() {
               {Auth.loggedIn() && (
                 <button
                   disabled={savedBookIds?.some((savedBookId) => savedBookId === result.bookId)}
-                  className='btn-block btn-info'
+                  className=''
                   onClick={() => handleSaveBook(result.bookId)}>
                   {savedBookIds?.some((savedBookId) => savedBookId === result.bookId)
                     ? 'This book has already been saved!'
