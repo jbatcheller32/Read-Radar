@@ -30,10 +30,14 @@ type Auth {
 }
 
 input BookInput{
-    bookId: ID
+
+   
+
+    bookId: ID!
+
     authors: [String]
     description: String
-    title: String
+    title: String!
     image: String
     link: String
     comments: [CommentInput]
@@ -51,7 +55,7 @@ type Query {
 type Mutation {
     login(email: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
-    saveBook(book: BookInput!): Book
+    saveBook(book: BookInput!): User
     removeBook (bookId: String!): User
     addComment(bookId: ID!, content: String!): User # Add this line for the addComment mutation
 }
