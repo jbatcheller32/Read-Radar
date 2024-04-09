@@ -8,7 +8,7 @@ type User {
 }
 
 type Book {
-    bookId: ID!
+    _id: ID
     authors: [String]
     description: String
     title: String
@@ -20,18 +20,21 @@ type Book {
 
 # Add this type definition for Comment
 type Comment {
-    date: String!
-    username: String!
+    bookId: ID!
     content: String!
 }
 
 type Auth {
     token: ID!
-    user: User 
+    user: User
 }
 
 input BookInput{
-    bookId: String!
+
+   
+
+    bookId: ID!
+
     authors: [String]
     description: String
     title: String!
@@ -41,9 +44,8 @@ input BookInput{
 }
 
 input CommentInput {
- username: String!
-  content: String! # Add this line
-  date: String! # Add this line
+    bookId: ID!
+    content: String! # Add this line
   }
 
 type Query {
@@ -55,8 +57,8 @@ type Mutation {
     addUser(username: String!, email: String!, password: String!): Auth
     saveBook(book: BookInput!): User
     removeBook (bookId: String!): User
-    addComment(date: String!, username: String!, content: String!): User # Add this line for the addComment mutation
+    addComment(bookId: ID!, content: String!): User # Add this line for the addComment mutation
 }
-`
+`;
 
-module.exports=typeDefs;
+module.exports = typeDefs;
