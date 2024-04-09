@@ -9,9 +9,9 @@ function BookSearch() {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [results, setResults] = useState([]);
-  const [savedBookIds, setSavedBookIds] = useState([]);
+  //const [savedBookIds, setSavedBookIds] = useState([]);
   const [comments, setComments] = useState([]);
-  const [saveBook] = useMutation(SAVE_BOOK);
+  const [saveBook, { error }] = useMutation(SAVE_BOOK);
   const [addComment] = useMutation(ADD_COMMENT);
 
   // this will handle the search depending on which search field you are using 
@@ -49,7 +49,15 @@ function BookSearch() {
   // handle the saved books, this allows users to save books if they are logged in 
   const handleSaveBook = async (bookId) => {
     const bookToSave = results.find((book) => book.bookId === bookId);
-    console.log(bookToSave)
+    const bookData = {
+      bookId: bookToSave.author_key[0],
+      authors: bookToSave.author_name[0],
+      description: bookToSave.first_sentence[0],
+      title: bookToSave.title,
+      image: '',
+      link: ''
+    }
+    console.log(bookToSave);
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
     if (!token) {
@@ -58,14 +66,14 @@ function BookSearch() {
 
     try {
       const { data } = await saveBook({
-        variables: { book: bookToSave }
+        variables: {book: {...bookData} }
       });
-
+console.log(data);
       if (!data || !data.saveBook) {
         throw new Error('Something went wrong!');
       }
 
-      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+      //setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
       console.error(err);
     }
@@ -146,15 +154,15 @@ function BookSearch() {
             <p>Genre: {result.subject ? result.subject.join(', ') : 'Unknown'}</p>
             {Auth.loggedIn() && (
               <div>
-                <button
-                  disabled={savedBookIds?.includes(result.bookId)}
+              <button
+                  // disabled={savedBookIds?.includes(result.bookId)}
                   className='btn-block btn-info'
                   onClick={() => handleSaveBook(result.bookId)}
                 >
-                  {savedBookIds?.includes(result.bookId)
+                  {/* {savedBookIds?.includes(result.bookId) 
                     ? 'This book has already been saved!'
-                    : 'Save this Book!'}
-                </button>
+                    : 'Save this Book!'}*/}
+                </button> 
                 <button
                   className='btn-block btn-info'
                   onClick={() => handleComments(result.bookId)}

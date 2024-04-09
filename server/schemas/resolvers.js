@@ -34,14 +34,15 @@ const resolvers = {
       return { token, user };
     },
     saveBook: async(parent, {book}, context) => {
+      console.log('another book', book);
       if (context.user) {
-        const bookdata = await Book.create(book)
-        const user = await User.findOneAndUpdate(
+        console.log(context.user);
+        const user = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { savedBooks: bookdata._id } },
-          { new: true, runValidators: true }
+          { $push: { savedBooks: book } },
+          { new: true }
         );
-        return bookdata;
+        return user;
       }
       throw AuthenticationError;
     },

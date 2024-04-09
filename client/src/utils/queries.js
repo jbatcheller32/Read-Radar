@@ -18,11 +18,12 @@ export const QUERY_USER = gql`
 export const QUERY_ME = gql`
   query me {
     me {
+      _id
       email
       username
       bookCount
       savedBooks {
-        _id
+        bookId
         authors
         description
         title
