@@ -18,14 +18,18 @@ export const QUERY_USER = gql`
 export const QUERY_ME = gql`
   query me {
     me {
-      _id
-      username
       email
-      comments {
+      username
+      bookCount
+      savedBooks {
         _id
-        commentText
-        commentAuthor
-        createdAt
+        authors
+        description
+        title
+        image
+        link
+        comments{
+          content}
       }
     }
   }

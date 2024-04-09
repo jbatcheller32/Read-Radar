@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { SAVE_BOOK } from '../utils/mutations';
+import { SAVE_BOOK, ADD_COMMENT } from '../utils/mutations';
 import Auth from '../utils/auth';
 import '../styles/styles.css';
 
@@ -10,12 +10,11 @@ function BookSearch() {
   const [author, setAuthor] = useState('');
   const [results, setResults] = useState([]);
   const [savedBookIds, setSavedBookIds] = useState([]);
+  const [comments, setComments] = useState([]);
   const [saveBook] = useMutation(SAVE_BOOK);
+  const [addComment] = useMutation(ADD_COMMENT);
 
-
-
-  // switch case to handle the search based on the field the user chooses to search
-
+  // this will handle the search depending on which search field you are using 
   const handleSearch = (e) => {
     const { name, value } = e.target;
     switch (name) {
@@ -32,13 +31,11 @@ function BookSearch() {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-
     setTitle('');
     setAuthor('');
-
   };
 
-  // this handle click function fetches the book data from the API
+  // this is the fetch to the API when you click submit to search for a book title, still working on getting the author search to work
   const handleClick = async () => {
     try {
       const response = await fetch(`https://openlibrary.org/search.json?title=${title}`);
@@ -47,18 +44,12 @@ function BookSearch() {
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-
   };
 
-
-  // this function will handle the books the user saved
-
+  // handle the saved books, this allows users to save books if they are logged in 
   const handleSaveBook = async (bookId) => {
-    // find the book in `searchedBooks` state by the matching id
-
     const bookToSave = results.find((book) => book.bookId === bookId);
-
-    // get token
+    console.log(bookToSave)
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
     if (!token) {
@@ -66,38 +57,67 @@ function BookSearch() {
     }
 
     try {
-      const input = {
-        bookId: bookToSave.bookId,
-        authors: bookToSave.authors,
-        title: bookToSave.title,
-        image: bookToSave.image,
-        link: bookToSave.link
-
-      };
-
       const { data } = await saveBook({
-        variables: { input }
+        variables: { book: bookToSave }
       });
-      console.log(data);
 
       if (!data || !data.saveBook) {
-        throw new Error('something went wrong!');
+        throw new Error('Something went wrong!');
       }
 
-      // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
       console.error(err);
     }
   };
 
+  // this allows the user to add a comment to a book if they are logged in 
+
+  const handleComments = async (bookId, commentContent) => {
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const { data } = await addComment({
+        variables: {
+          bookId: bookId,
+          username: Auth.getProfile().username,
+          content: commentContent,
+          date: new Date().toISOString(),
+        }
+      });
+
+      if (!data || !data.addComment) {
+        throw new Error('Something went wrong!');
+      }
+
+      const updatedComments = [...comments, data.addComment]; // Add the new comment to existing comments
+      setComments(updatedComments);
+
+      //  this will update the results with the new comment
+      const updatedResults = results.map(result => {
+        if (result.bookId === bookId) {
+          return {
+            ...result,
+            comments: [...(result.comments || []), data.addComment]
+          };
+        }
+        return result;
+      });
+
+      setResults(updatedResults);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
 
   return (
     <div className="container text-center">
-      <h1>
-        Search
-      </h1>
+      <h1>Search</h1>
       <form className="form" onSubmit={handleSearchSubmit}>
         <input
           value={title}
@@ -119,38 +139,35 @@ function BookSearch() {
       </form>
 
       <section className="results">
-        {results.map((result, index) => (
-          <div key={index}>
+        {results.map((result) => (
+          <div key={result.bookId}>
             <h2>{result.title}</h2>
-            <p>Author: {result.author_name ? result.author_name.join(', ') : 'Unknown'}</p>
+            <p>Author: {result.authors ? result.authors.join(', ') : 'Unknown'}</p>
             <p>Genre: {result.subject ? result.subject.join(', ') : 'Unknown'}</p>
             {Auth.loggedIn() && (
-                      <button
-                        disabled={savedBookIds?.some((savedBookId) => savedBookId === result.bookId)}
-                        className='btn-block btn-info'
-                        onClick={() => handleSaveBook(result.bookId)}>
-                        {savedBookIds?.some((savedBookId) => savedBookId === result.bookId)
-                          ? 'This book has already been saved!'
-                          : 'Save this Book!'}
-                      </button>
-                       )}
+              <div>
+                <button
+                  disabled={savedBookIds?.includes(result.bookId)}
+                  className='btn-block btn-info'
+                  onClick={() => handleSaveBook(result.bookId)}
+                >
+                  {savedBookIds?.includes(result.bookId)
+                    ? 'This book has already been saved!'
+                    : 'Save this Book!'}
+                </button>
+                <button
+                  className='btn-block btn-info'
+                  onClick={() => handleComments(result.bookId)}
+                >
+                  Add Comment
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </section>
     </div>
   );
 }
+
 export default BookSearch;
-
-
-
-
-
-
-
-
-
-
-
-
-
