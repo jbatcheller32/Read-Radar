@@ -1,10 +1,9 @@
 Dans-Branch
 const { User, Book } = require('../models');
-const { signToken, AuthenticationError } = require('../utils/Auth');
 
 const { default: mongoose } = require("mongoose");
 const { User, Book } = require("../models");
-const { signToken, AuthenticationError } = require("../utils/auth");
+const { signToken, AuthenticationError } = require("../utils/Auth");
 main
 
 const resolvers = {
