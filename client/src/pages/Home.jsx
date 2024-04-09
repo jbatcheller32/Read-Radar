@@ -170,7 +170,7 @@ console.log(data);
                   className='btn-block btn-info'
                   onClick={() => handleComments(result.bookId)}
                 >
-                  Add Comment
+                  Add a Comment
                 </button>
               </div>
             )}
