@@ -50,13 +50,16 @@ function BookSearch() {
   const handleSaveBook = async (bookId) => {
     const bookToSave = results.find((book) => book.bookId === bookId);
     const bookData = {
-      bookId: bookToSave.author_key[0],
+      bookId: bookToSave.cover_edition_key,
       authors: bookToSave.author_name[0],
       description: bookToSave.first_sentence[0],
       title: bookToSave.title,
       image: '',
       link: ''
     }
+
+    
+    console.log(bookData);
     console.log(bookToSave);
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 

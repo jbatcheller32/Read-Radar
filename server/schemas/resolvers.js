@@ -2,7 +2,7 @@ const { User, Book } = require('../models');
 const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
-  Query:{
+  Query: {
     me: async (parent, args, context) => {
       if (context.user) {
         return User.findOne({ _id: context.user._id }).populate('savedBooks');
@@ -33,11 +33,10 @@ const resolvers = {
 
       return { token, user };
     },
-    saveBook: async(parent, {book}, context) => {
-      console.log('another book', book);
+
+    saveBook: async (parent, { book }, context) => {
       if (context.user) {
-        console.log(context.user);
-        const user = await User.findByIdAndUpdate(
+        const user = await User.findOneAndUpdate(
           { _id: context.user._id },
           { $push: { savedBooks: book } },
           { new: true }
@@ -46,7 +45,8 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
-    addComment: async(parent, { book, username, comment }, context) => {
+
+    addComment: async (parent, { book, username, comment }, context) => {
       if (context.user) {
         const user = await User.findOneAndUpdate(
           { _id: context.user._id },
@@ -77,4 +77,4 @@ const resolvers = {
   },
 }
 
-module.exports=resolvers;
+module.exports = resolvers;
