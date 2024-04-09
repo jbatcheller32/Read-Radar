@@ -17,6 +17,10 @@ const bookSchema = new Schema({
     required: true,
   },
   // saved book id from Open Library
+  bookId: {
+    type: String,
+    required: true
+  },
 
   image: {
     type: String,
