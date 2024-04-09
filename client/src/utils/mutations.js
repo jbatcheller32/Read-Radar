@@ -36,40 +36,29 @@ export const ADD_PROFILE = gql`
 `;
 
 export const SAVE_BOOK = gql`
-mutation saveBook($book: BookInput!) {
-  saveBook(book: $book) {
-    _id
-    username
-    email
-    bookCount
-    savedBooks {
-      bookId
-      authors
-      description
-      title
-      image
-      link
-    }
-    comments {
-      book
+  mutation saveBook($book: BookInput!) {
+    saveBook(book: $book) {
+      _id
       username
-      comment
+      savedBooks {
+        bookId
+        authors
+        description
+        title
+        image
+        link
+      }
     }
   }
-}`;
+`;
 
 export const ADD_COMMENT = gql`
-  mutation addComment($thoughtId: ID!, $commentText: String!) {
-    addComment(thoughtId: $thoughtId, commentText: $commentText) {
+  mutation addComment($username: String!, $content: String!, $date: String!) {
+    addComment(username: $username, content: $content, date: $date) {
       _id
-      thoughtText
-      thoughtAuthor
-      createdAt
-      comments {
-        _id
-        commentText
-        createdAt
-      }
+      username
+      content
+      date
     }
   }
 `;
