@@ -5,6 +5,10 @@
 
 Singup, login, search for books, save your favorites, and remove them when you're done.
 
+## Screenshot
+![image](https://github.com/jbatcheller32/Read-Radar/assets/91248776/6eacf84f-07a5-44eb-862c-c58e73f8dcfe)
+
+
 ## Github
 
 https://github.com/jbatcheller32/Read-Radar
